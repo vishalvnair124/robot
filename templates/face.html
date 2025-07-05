@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="hidden" id="talkMsg" value="{{ talkMsg }}" />
+    <div class="container">
+      <div class="face-container">
+        <div class="face">
+          <div class="hair-left hair-color"></div>
+          <div class="hair-right hair-color"></div>
+          <div class="eye-brow-left hair-color"></div>
+          <div class="eye-brow-right hair-color"></div>
+          <div class="left-eye eye">
+            <div class="pupil"></div>
+          </div>
+          <div class="right-eye eye">
+            <div class="pupil"></div>
+          </div>
+          <div class="nose"></div>
+          <div class="mu-top"></div>
+          <div class="lips">
+            <div class="top-lip"></div>
+            <div class="tith"></div>
+            <div class="bottom-lip"></div>
+          </div>
+          <div class="mu-bottom"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <style>
+    /* General styles remain the same */
+
+    * {
+      padding: 0;
+      margin: 0;
+      border: 0;
+    }
+
+    body,
+    html {
+      height: 100%;
+      width: 100%;
+    }
+
+    html {
+      --mouse-x: 0.5;
+      --mouse-y: -0.5;
+    }
+
+    .container {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .face-container {
+      width: 383px;
+      height: 440px;
+    }
+
+    .face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: #f1c27d;
+      border-radius: 45% 45% 56% 56%;
+      box-shadow: 0 0 5px 5px rgb(211, 211, 211);
+    }
+
+    .hair-left {
+      position: absolute;
+      top: 5px;
+      left: -15px;
+      height: 118px;
+      width: 223px;
+      border-radius: 100px 28px 59px 9px;
+      transform: rotate(-15deg);
+      background-color: #805515;
+    }
+
+    .hair-right {
+      position: absolute;
+      top: -1px;
+      right: -53px;
+      height: 147px;
+      width: 303px;
+      border-radius: 106px 100px 9px 39px;
+      transform: rotate(32deg);
+      z-index: 1;
+      background-color: #805515;
+    }
+
+    .eye-brow-left {
+      position: absolute;
+      top: 145px;
+      left: 51px;
+      height: 15px;
+      width: 117px;
+      border-radius: 100% 0 0 0;
+      background-color: rgb(90 60 13);
+    }
+
+    .eye-brow-right {
+      position: absolute;
+      top: 145px;
+      right: 51px;
+      height: 15px;
+      width: 117px;
+      border-radius: 0 100% 0 0;
+      background-color: rgb(90 60 13);
+    }
+
+    .eye {
+      top: 170px;
+      box-shadow: 0 0 9px 1px #a79d9d7a;
+      position: absolute;
+      background-color: rgb(255 255 255 / 0.95);
+      height: 50px;
+      width: 60px;
+      border-radius: 50% 50%;
+      z-index: 0;
+      overflow: hidden;
+      animation: blink infinite 12s ease-in-out;
+    }
+
+    .eye::after {
+      content: " ";
+      width: 60px;
+      height: 39px;
+      border-radius: 50% 50% 0 0;
+      position: absolute;
+      top: 7px;
+      box-shadow: 0px -11px 0px 0px #f1c27d;
+      border-top: 1px solid black;
+    }
+
+    .left-eye {
+      left: 72px;
+    }
+
+    .right-eye {
+      right: 72px;
+    }
+
+    .pupil {
+      position: absolute;
+      top: 16px;
+      right: 21px;
+      content: " ";
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: black;
+      box-sizing: border-box;
+      will-change: transform;
+      transition: transform 200ms;
+      transform: translateX(calc(var(--mouse-x) * 50%))
+        translateY(calc(var(--mouse-y) * 50%));
+    }
+
+    .pupil::before {
+      content: " ";
+      position: absolute;
+      bottom: 13px;
+      left: 12px;
+      width: 12px;
+      height: 12px;
+      display: block;
+      box-shadow: -2px 2px 0px 0px white;
+      border-radius: 50%;
+    }
+
+    .nose {
+      position: absolute;
+      top: 220px;
+      right: 0;
+      left: 0;
+      margin: 0 auto;
+      border-radius: 50px 50px 50px 50px / 100px 100px 10px 10px;
+      width: 47px;
+      height: 59px;
+      border-right: 1px solid #a081814f;
+      border-left: 1px solid #a081814f;
+      border-bottom: 1px solid rgb(92, 92, 92);
+    }
+
+    .mu-top {
+      height: 24px;
+      width: 132px;
+      right: 0;
+      left: 0;
+      margin: 0 auto;
+      position: absolute;
+      bottom: 113px;
+      background-color: rgb(90 60 13);
+      border-radius: 100px 100px 0 0;
+    }
+
+    .mu-bottom {
+      height: 131px;
+      width: 116px;
+      right: 0;
+      left: 0;
+      margin: 0 auto;
+      position: absolute;
+      bottom: 32px;
+      box-shadow: 0px 21px 0px 9px rgb(90 60 13);
+      border-radius: 40px;
+    }
+
+    .mu-bottom::after {
+      content: " ";
+      position: absolute;
+      bottom: -12px;
+      height: 40px;
+      width: 23px;
+      right: 0;
+      left: 0;
+      border-radius: 6px;
+      margin: 0 auto;
+      background-color: rgb(90 60 13);
+    }
+
+    .top-lip {
+      height: 16px;
+      width: 90px;
+      right: 0;
+      left: 0;
+      margin: 0 auto;
+      position: absolute;
+      bottom: 100px;
+      box-shadow: 0px 4px 0px 2px rgb(236 56 56);
+      border-radius: 50%;
+      transition: 1s;
+      z-index: 5;
+      /* animation: talk 2s infinite; */
+    }
+
+    .bottom-lip {
+      height: 59px;
+      width: 90px;
+      right: 0;
+      left: 0;
+      margin: 0 auto;
+      position: absolute;
+      bottom: 81px;
+      box-shadow: 0px 13px 0px 2px rgb(236 56 56);
+      border-radius: 50%;
+      transition: 1s;
+      z-index: 5;
+      /* animation: talk 2s infinite; */
+    }
+
+    .lips {
+      height: 200px;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      margin: 0 auto;
+      width: 200px;
+      z-index: 5;
+    }
+
+    .tith {
+      position: absolute;
+      right: 0;
+      left: 0;
+      margin: 0 auto;
+      bottom: 82px;
+      background-color: whitesmoke;
+      width: 84px;
+      height: 18px;
+      border-radius: 0 0 50% 50%;
+      transition: 0.5s;
+      z-index: 3;
+      /* animation: talk 2s infinite; */
+    }
+
+    @keyframes blink {
+      0%,
+      2%,
+      19%,
+      21%,
+      50%,
+      52%,
+      100% {
+        transform: scaleX(1) scaleY(1);
+      }
+      1%,
+      20%,
+      51% {
+        transform: scaleX(1.3) scaleY(0.1);
+      }
+    }
+
+    /* Keyframes for talking */
+    @keyframes talk {
+      0%,
+      2%,
+      19%,
+      21%,
+      50%,
+      52%,
+      100% {
+        transform: scaleY(1);
+      }
+      10%,
+      30%,
+      50%,
+      70%,
+      90% {
+        transform: scaleY(0.5);
+      }
+      20%,
+      40%,
+      60%,
+      80% {
+        transform: scaleY(0.8);
+      }
+    }
+    .talk {
+      animation: talk 2s 10 forwards;
+    }
+  </style>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const talkMsg = document.getElementById("talkMsg").value;
+
+      if (talkMsg && talkMsg.trim() !== "") {
+        console.log("Talking: ", talkMsg);
+
+        // ask user to click or keydown at least once
+        document.body.addEventListener(
+          "click",
+          () => {
+            startTalk(talkMsg);
+          },
+          { once: true }
+        );
+
+        alert("Click anywhere to let the bot speak.");
+      } else {
+        console.log("No message to speak.");
+      }
+
+      // // 🧩 Listen for spacebar
+      // document.body.addEventListener("keydown", (e) => {
+      //   if (e.code === "Space") {
+      //     console.log("🎙️ Starting recording...");
+      //     startRecording();
+      //   }
+      // });
+    });
+
+    function startTalk(message) {
+      const lips = document.querySelector(".lips");
+
+      // Estimate duration (rough)
+      const words = message.split(/\s+/).length;
+      const wpm = 150;
+      const durationMs = (words / wpm) * 60 * 1000 + 500;
+
+      // Animate lips
+      lips.querySelectorAll(".top-lip, .bottom-lip, .tith").forEach((part) => {
+        part.classList.add("talk");
+      });
+
+      // Prepare speech
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.rate = 1;
+      utterance.volume = 9.0;
+
+      // Optional: wait for voices
+      const voices = speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        utterance.voice = voices[0];
+      }
+
+      speechSynthesis.speak(utterance);
+
+      // When speech ends
+      utterance.onend = () => {
+        lips
+          .querySelectorAll(".top-lip, .bottom-lip, .tith")
+          .forEach((part) => {
+            part.classList.remove("talk");
+          });
+      };
+
+      setTimeout(() => {
+        lips
+          .querySelectorAll(".top-lip, .bottom-lip, .tith")
+          .forEach((part) => {
+            part.classList.remove("talk");
+          });
+      }, durationMs + 500);
+    }
+    let isListening = false;
+
+    function startListening() {
+      if (!("webkitSpeechRecognition" in window)) {
+        alert("Speech Recognition not supported.");
+        return;
+      }
+
+      const recognition = new webkitSpeechRecognition();
+      window.currentRecognizer = recognition;
+
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      recognition.continuous = true;
+
+      recognition.start();
+      isListening = true;
+
+      console.log("🎙️ Started continuous listening…");
+
+      recognition.onresult = (event) => {
+        const transcript =
+          event.results[event.resultIndex][0].transcript.trim();
+        console.log("🗨️ Heard:", transcript);
+
+        // 🔷 check trigger word
+        if (/bot|hey bot|assistant|nanadhu|nanadu|Nandu/i.test(transcript)) {
+          console.log("🚀 Trigger word detected! Sending…");
+
+          fetch("/speech-to-text", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: transcript }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log("🤖 Bot replied:", data.reply);
+              startTalk(data.reply);
+            });
+        } else {
+          console.log("ℹ️ No trigger word found.");
+        }
+      };
+
+      recognition.onerror = (event) => {
+        console.error("❌ Speech recognition error:", event.error);
+      };
+
+      recognition.onend = () => {
+        console.log("🔁 Restarting listener…");
+        if (isListening) {
+          recognition.start(); // restart
+        }
+      };
+    }
+
+    // Start automatically on page load
+    window.addEventListener("DOMContentLoaded", () => {
+      startListening();
+    });
+  </script>
+</html>
