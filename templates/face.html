@@ -359,50 +359,74 @@
       //   }
       // });
     });
+    // 🧩 Speech synthesis
+    let isTalking = false;
 
     function startTalk(message) {
       const lips = document.querySelector(".lips");
 
-      // Estimate duration (rough)
-      const words = message.split(/\s+/).length;
-      const wpm = 150;
-      const durationMs = (words / wpm) * 60 * 1000 + 500;
+      // Cancel previous speech
+      speechSynthesis.cancel();
+      stopAnimation(lips);
 
-      // Animate lips
-      lips.querySelectorAll(".top-lip, .bottom-lip, .tith").forEach((part) => {
-        part.classList.add("talk");
-      });
-
-      // Prepare speech
       const utterance = new SpeechSynthesisUtterance(message);
       utterance.rate = 1;
-      utterance.volume = 9.0;
+      utterance.volume = 0.9;
 
-      // Optional: wait for voices
       const voices = speechSynthesis.getVoices();
       if (voices.length > 0) {
         utterance.voice = voices[0];
       }
 
-      speechSynthesis.speak(utterance);
-
-      // When speech ends
-      utterance.onend = () => {
-        lips
-          .querySelectorAll(".top-lip, .bottom-lip, .tith")
-          .forEach((part) => {
-            part.classList.remove("talk");
-          });
+      utterance.onstart = () => {
+        console.log("🎙️ Speech started");
+        isTalking = true;
+        startAnimation(lips);
       };
 
-      setTimeout(() => {
-        lips
-          .querySelectorAll(".top-lip, .bottom-lip, .tith")
-          .forEach((part) => {
-            part.classList.remove("talk");
-          });
-      }, durationMs + 500);
+      utterance.onend = () => {
+        console.log("✅ Speech ended");
+        isTalking = false;
+        stopAnimation(lips);
+      };
+
+      utterance.onerror = () => {
+        console.log("❌ Speech error");
+        isTalking = false;
+        stopAnimation(lips);
+      };
+
+      // Actually speak
+      speechSynthesis.speak(utterance);
+
+      // Fallback timer — in case browser fires `onend` early
+      monitorSpeaking(lips);
     }
+
+    function startAnimation(lips) {
+      lips.querySelectorAll(".top-lip, .bottom-lip, .tith").forEach((part) => {
+        part.classList.add("talk");
+      });
+    }
+
+    function stopAnimation(lips) {
+      lips.querySelectorAll(".top-lip, .bottom-lip, .tith").forEach((part) => {
+        part.classList.remove("talk");
+      });
+    }
+
+    function monitorSpeaking(lips) {
+      const interval = setInterval(() => {
+        if (!speechSynthesis.speaking && isTalking) {
+          console.log("🔇 Stopped speaking (detected)");
+          isTalking = false;
+          stopAnimation(lips);
+          clearInterval(interval);
+        }
+      }, 100);
+    }
+
+    // 🧩 Continuous speech recognition
     let isListening = false;
 
     function startListening() {
@@ -430,7 +454,7 @@
         console.log("🗨️ Heard:", transcript);
 
         // 🔷 check trigger word
-        if (/bot|hey bot|assistant|nanadhu|nanadu|Nandu/i.test(transcript)) {
+        if (/hello|assistant|helo/i.test(transcript)) {
           console.log("🚀 Trigger word detected! Sending…");
 
           fetch("/speech-to-text", {

@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, render_template,request
 from multiprocessing import Process
 import datetime
+import ollama
+import requests
 
 app = Flask(__name__)
 
@@ -47,17 +49,36 @@ def home():
         talkMsg=wishme_text()
     )
 
+
 @app.route("/speech-to-text", methods=["POST"])
 def speech_to_text():
     data = request.get_json()
     user_text = data.get("text", "").strip()
     print(f"User said: {user_text}")
 
-    # 🤖 Example reply logic
-    if "time" in user_text.lower():
-        reply = f"The time is {datetime.datetime.now().strftime('%H:%M:%S')}"
-    else:
-        reply = "I heard you say: " + user_text
+    # 🔷 Prepare Ollama API request
+    url = "http://localhost:11434/api/generate"
+    headers = {"Content-Type": "application/json"}
+    payload = {
+        "model": "mistral",  # or llama3, etc.
+        "prompt": user_text,
+        "stream": False
+    }
+
+    try:
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
+
+        if response.ok:
+            response_json = response.json()
+            reply = response_json.get("response") or response_json.get("message", "No response key found.")
+            reply = reply.strip()
+        else:
+            print(f"❌ Ollama error {response.status_code}: {response.text}")
+            reply = "Sorry, the model returned an error."
+
+    except requests.exceptions.RequestException as e:
+        print(f"🚨 Request failed: {e}")
+        reply = "Sorry, I could not connect to the model."
 
     return jsonify({"reply": reply})
 
